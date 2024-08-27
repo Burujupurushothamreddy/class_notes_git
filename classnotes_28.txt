@@ -1,0 +1,14 @@
+Snowflake Realtime Training
+                                        Session-28
+                                --------------------------
+                                  Power bi integration
+                                 
+                                 
+    Account name :  https://sn49225.central-india.azure.snowflakecomputing.com
+    database:
+    warehouse:
+    username:
+    pwd:
+    role:
+   
+    https://youtu.be/n5-fQ7TGV-0
