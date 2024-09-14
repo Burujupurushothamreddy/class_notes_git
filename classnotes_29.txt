@@ -1,0 +1,240 @@
+Snowflake Realtime Training 
+								        Session-29
+								--------------------------
+							    	UDF  & Stored procedures 
+								https://youtu.be/gPrcOgwBzl4	
+		substr (name , 1,3 )
+
+		lower
+		upper
+		
+		3,5  
+
+
+
+-------------TASK -----
+
+
+Create a table name as customers 
+
+
+cid , cname , amount ,adress , phone 
+
+---------------------------------------------
+
+1) Create a procedure   to insert the values 
+2) write a procuder for with draw logic (acno ,1000)
+3) write a procuder for with deposit logic (acno ,1000)
+4) write a procedure to display customers based on branch/address (blr)
+5) wirite a procedure to delete customer is inactive  (accno)
+
+
+--------------
+
+
+
+
+select sysdate();
+
+select substr(sysdate(),1,10);
+
+CREATE OR REPLACE FUNCTION vitech_date(business_date timestamp)
+RETURNS DATE
+LANGUAGE SQL
+AS
+$$
+    TO_DATE(SUBSTR(TO_CHAR(business_date),1,10))
+$$;
+
+select sysdate()
+
+select vitech_date('2024-08-28 05:46:11.615')
+
+
+select vitech_time('2024-08-28 05:46:11.615')
+
+
+CREATE OR REPLACE FUNCTION vitech_time(business_date timestamp)
+RETURNS string
+LANGUAGE SQL
+AS
+$$
+   SUBSTR(TO_CHAR(business_date),11,10)
+$$;
+
+
+CREATE OR REPLACE FUNCTION get_sum(a int, b int)
+RETURNS int
+LANGUAGE SQL
+AS
+$$
+   a+b 
+$$;
+
+select get_sum(9,11)
+
+
+CREATE OR REPLACE TABLE SALES(
+   sale_datetime TIMESTAMP,
+   sale_amount NUMBER(19,4)
+);
+
+
+
+INSERT INTO SALES VALUES
+('2023-01-01 12:53:22.000','2876.93'),
+('2023-01-02 01:14:55.000','3509.75'),
+('2023-01-03 01:05:12.000','2971.66'),
+('2023-01-04 12:47:49.000','3328.32');
+
+
+select * from sales ;
+
+select vitech_date(sale_datetime) , sale_amount from sales ;
+----------------------table
+
+
+CREATE OR REPLACE TABLE sales_by_country(
+year NUMBER(4),
+country VARCHAR(50),
+sale_amount NUMBER
+);
+
+
+
+INSERT INTO SALES_BY_COUNTRY VALUES
+('2022','US','90000'),
+('2022','UK','75000'),
+('2022','FR','55000'),
+('2023','US','100000'),
+('2023','UK','80000'),
+('2023','FR','70000');
+
+
+CREATE OR REPLACE TABLE currency(
+country VARCHAR(50),
+currency VARCHAR(3)
+);	
+
+
+INSERT INTO CURRENCY VALUES
+('US','USD'),
+('UK','GBP'),
+('FR','EUR');
+
+
+select * from SALES_BY_COUNTRY;
+
+CREATE OR REPLACE FUNCTION get_sales(country_name VARCHAR)
+RETURNS TABLE (year NUMBER, sale_amount NUMBER, country VARCHAR)
+AS
+$$
+SELECT year, sale_amount, country
+FROM sales_by_country
+WHERE country = country_name
+$$
+;
+
+SELECT * FROM TABLE(get_sales('US'));
+
+SELECT * FROM TABLE(get_sales_max_amount('US'));
+
+SELECT   country,max(sale_amount) as maxsales
+FROM sales_by_country
+WHERE country = 'US'
+group by country
+
+
+CREATE OR REPLACE FUNCTION get_sales_max_amount(country_name VARCHAR)
+RETURNS TABLE ( sale_max_amount NUMBER, country VARCHAR)
+AS
+$$
+SELECT max(sale_amount) as sale_max_amount, country
+FROM sales_by_country
+WHERE country = country_name
+group by country
+$$
+;
+
+
+-----------------------------
+select * from employees;
+
+
+create or replace table emp as (
+select * from employees )
+
+
+select * from emp ;
+
+delete from emp where salary < = 5000
+
+CREATE OR REPLACE PROCEDURE purge_emp_data()
+RETURNS VARCHAR
+LANGUAGE SQL
+AS
+$$
+DECLARE
+message VARCHAR;
+BEGIN
+DELETE FROM emp WHERE salary <= 6000;
+message := 'below 5000 employees data deleted successfully';
+RETURN message;
+END;
+$$
+;
+
+
+call purge_emp_data(15000);
+
+call sp(101,'sunil','blr',999999)
+
+
+CREATE OR REPLACE PROCEDURE purge_emp_data(sal int)
+RETURNS VARCHAR
+LANGUAGE SQL
+AS
+$$
+DECLARE
+message VARCHAR;
+BEGIN
+DELETE FROM emp WHERE salary <=:sal;
+message := 'below'||:sal||'employees data deleted successfully';
+RETURN message;
+END;
+$$
+;
+
+
+
+-------------TASK -----
+
+
+Create a table name as customers 
+
+
+cid , cname , amount ,adress , phone 
+
+---------------------------------------------
+
+1) Create a procedure   to insert the values 
+2) write a procuder for with draw logic (acno ,1000)
+3) write a procuder for with deposit logic (acno ,1000)
+4) write a procedure to display customers based on branch/address (blr)
+5) wirite a procedure to delete customer is inactive  (accno)
+
+
+
+CREATE OR REPLACE FUNCTION get_sum(i int,j int)
+returns int
+language python
+runtime_version = '3.8'
+handler = 'get_sum_py'
+AS
+$$
+def get_sum_py(i,j):
+  return i+j
+$$;
+
+
+select get_sum(11,22)		
